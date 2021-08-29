@@ -7,10 +7,8 @@ function Contacts() {
 
     var [currentId, setCurrentId] = useState(''); //For delete & update purpose
 
-    var [contactObjects, setContactObjects] = useState({}); //state for data
+    var [userData, setUserData] = useState({}); //state for data
 
-    // const [fetchData, setFetchData] = useState({}); 
-    // const [currentId, setCurrentID] = useState(''); 
     //$ Function to fetch (GET) data from database
     useEffect(() => {
           /*On any change in contacts collection useEffect runs, & it returns an object (snap)
@@ -18,10 +16,9 @@ function Contacts() {
          snap.val(), we're use ...snap.val() because we want the previous values of the object as well  
          In place of snap we can use any variable name. 
         */
-
         firebaseDB.child('contacts').on('value', snapshot => {
             if (snapshot.val() != null) {
-                setContactObjects({
+                setUserData({
                     ...snapshot.val()
                 });
             }
@@ -29,7 +26,7 @@ function Contacts() {
     }, [])
 
 
-    //> Function to add (POST) data to firebase database
+    //> Function to add (POST) amd PUT/PATCH data to firebase database
     const addOrEdit = (obj) => {
         if (currentId == '')
         firebaseDB.child('contacts').push(
@@ -51,6 +48,7 @@ function Contacts() {
                 })
       }
   
+      //* Function to DELETE data to firebase database
       const onDelete = id => {
         if (window.confirm('Are you sure to delete this record?')) {
             firebaseDB.child(`contacts/${id}`).remove(
@@ -76,7 +74,7 @@ function Contacts() {
         
             {/* Fot adding data*/}
             <div className="col-md-5">
-                <ContactForm {...({ currentId, contactObjects, addOrEdit })} ></ContactForm>
+                <ContactForm {...({ currentId, userData, addOrEdit })} ></ContactForm>
             </div>
 
             {/* Fot fetching data*/}
@@ -94,12 +92,12 @@ function Contacts() {
 
                     <tbody>
                         {
-                            Object.keys(contactObjects).map((key) => (
+                            Object.keys(userData).map((key) => (
                                  <tr key={key}>
-                                    <td>{ contactObjects[key].name}</td>
-                                    <td>{ contactObjects[key].mobile}</td>
-                                    <td>{ contactObjects[key].email}</td>
-                                    <td>{ contactObjects[key].message}</td>
+                                    <td>{ userData[key].name}</td>
+                                    <td>{ userData[key].mobile}</td>
+                                    <td>{ userData[key].email}</td>
+                                    <td>{ userData[key].message}</td>
                                     <td>
                                         <a className="btn btn-primary"   onClick={() => { setCurrentId(key) }} >
                                             <i className="fas fa-pencil-alt"></i>

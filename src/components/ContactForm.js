@@ -3,6 +3,7 @@ import styles from './ContactForm.module.css';
 
 function ContactForm(props) {
 
+    //Creating a object of initial values
     const initialFieldValues = {
         name: "", 
         mobile: "",
@@ -10,29 +11,33 @@ function ContactForm(props) {
         message: ""
     }
 
+    //State of the object values
     var [values, setValues] = useState(initialFieldValues)
 
-
+    //Re renders when either currentID or userData changes
     useEffect(() => {
         if (props.currentId == '')
-            setValues({ ...initialFieldValues })
+            setValues({ ...initialFieldValues }) //If there's no current ID then set initial state 
         else
             setValues({
-                ...props.contactObjects[props.currentId]
+                ...props.userData[props.currentId] //Else set the data that we receive as props
             })
-    }, [props.currentId, props.contactObjects])
+    }, [props.currentId, props.userData])
 
+
+    //Handle input changes
     const handleInputChange = e => {
         var { name, value } = e.target;
         setValues({
             ...values,
-            [name]: value
+            [name]: value //If we don't do this then we have to do this for name, email, number & other fields
         })
     }
 
+    //Handle form submit
     const handleFormSubmit = e => {
         e.preventDefault()
-        props.addOrEdit(values);
+        props.addOrEdit(values); //Passing the values object to addOrEdit function 
     }
 
     return (
